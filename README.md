@@ -12,8 +12,8 @@ Code for "Unpaired Sentiment-to-Sentiment Translation: A Cycled Reinforcement Le
 The details of input data are shown in "train-original" and "test-original" (the processed Yelp data). If you want to run our code on your own dataset, you first need to process your dataset into the specific data structure.
 ## Run
 ```bash
-nohup bash run_train.sh > log_train.txt &
-nohup bash run_test.sh > log_test.txt &
+CUDA_VISIBLE_DEVICES=2 nohup bash run_train.sh > log_train.txt &
+CUDA_VISIBLE_DEVICES=2 nohup bash run_test.sh > log_test.txt &
 ```
 ## Cite
 To use this code, please cite the following paper:<br><br>
