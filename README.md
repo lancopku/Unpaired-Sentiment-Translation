@@ -8,7 +8,8 @@ Code for "Unpaired Sentiment-to-Sentiment Translation: A Cycled Reinforcement Le
 ## Data
 * [Yelp](https://www.yelp.com/dataset/challenge)
 * [Amazon](https://snap.stanford.edu/data/web-FineFoods.html)
-* The details of input data are shown in the "train-original" and "test-original" (the processed Yelp data). If you want to run our code on your own dataset, you first need to process the dataset into the specific data structure.
+
+The details of input data are shown in "train-original" and "test-original" (the processed Yelp data). If you want to run our code on your own dataset, you first need to process your dataset into the specific data structure.
 ## Run
 ```bash
 nohup bash run_train.sh > log_train.txt &
