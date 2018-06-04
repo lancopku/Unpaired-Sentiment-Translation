@@ -5,7 +5,6 @@ import codecs
 import tensorflow as tf
 import data
 import shutil
-from  result_evaluate import Evaluate
 
 FLAGS = tf.app.flags.FLAGS
 
@@ -16,7 +15,7 @@ class Generate_training_sample(object):
         self._sess = sess
 
         self.batches = batcher.get_batches(mode='train')
-        self.valid_batches = batcher.get_batches(mode='valid')
+        self.test_batches = batcher.get_batches(mode='test')
         self.current_batch = 0
 
 
@@ -51,9 +50,9 @@ class Generate_training_sample(object):
 
 
 
-    def generator_validation_example(self, validation_positive_dir):
+    def generate_test_example(self, test_positive_dir):
 
-        self.temp_positive_dir = validation_positive_dir
+        self.temp_positive_dir = test_positive_dir
 
 
         if not os.path.exists(self.temp_positive_dir): os.mkdir(self.temp_positive_dir)
@@ -64,42 +63,20 @@ class Generate_training_sample(object):
 
         counter = 0
 
-        for step in range(len(self.valid_batches)):
-            decode_result =  self._model.run_attention_weight_ypred_auc(self._sess, self.valid_batches[step])
+        for step in range(len(self.test_batches)):
+            decode_result =  self._model.run_attention_weight_ypred_auc(self._sess, self.test_batches[step])
             decode_result['y_pred_auc'] = decode_result['y_pred_auc'].tolist()
 
             for i in range(FLAGS.batch_size):
 
-                original_review = self.valid_batches[step].original_reviews[i]  # string
-                score = self.valid_batches[step].labels[i]
+                original_review = self.test_batches[step].original_reviews[i]  # string
+                score = self.test_batches[step].labels[i]
 
-                self.write_negtive_to_json(validation_positive_dir, original_review, score, decode_result['y_pred_auc'][i],
+                self.write_negtive_to_json(test_positive_dir, original_review, score, decode_result['y_pred_auc'][i],
                                            decode_result['weight'][i], counter)
                 counter += 1  # this is how many examples we've decoded
 
 
-
-    '''def generator_validation_negetive_example(self, validation_negetive_dir):
-        self.temp_positive_dir = validation_negetive_dir
-
-        if not os.path.exists(self.temp_positive_dir): os.mkdir(self.temp_positive_dir)
-
-        shutil.rmtree(self.temp_positive_dir)
-        if not os.path.exists(self.temp_positive_dir): os.mkdir(self.temp_positive_dir)
-
-        counter = 0
-
-        for step in range(len(self.valid_batches)):
-            decode_result = self._model.run_attention_weight_ypred_auc(self._sess, self.valid_batches[step])
-
-            for i in range(FLAGS.batch_size):
-                original_review = self.valid_batches[step].original_reviews[i]  # string
-                score = 1-int(self.valid_batches[step].labels[i])
-
-                self.write_negtive_to_json(validation_negetive_dir, original_review, score,
-                                           decode_result['y_pred_auc'][i],
-                                           decode_result['weight'][i], counter)
-                counter += 1  # this is how many examples we've decoded'''
 
     def write_negtive_to_json(self, positive_dir, original_review, score, reward,weight, counter):
         #print(reward)

@@ -153,8 +153,8 @@ class SenBatcher(object):
         self._vocab = vocab
         self._hps = hps
 
-        self.train_queue = self.fill_example_queue("train/*", mode ="train", target_score = 1,filenumber = 643)
-        self.valid_queue = self.fill_example_queue("valid/*",  mode ="valid", target_score = 1,filenumber = 5)
+        self.train_queue = self.fill_example_queue("train/*", mode ="train", filenumber = 643)
+        self.test_queue = self.fill_example_queue("test/*",  mode ="test", filenumber = 5)
         #self.valid_transfer_queue_positive = self.fill_example_queue("valid/*", mode="valid", target_score=1)
 
         #self.train_queue_negetive = self.fill_example_queue(
@@ -168,7 +168,7 @@ class SenBatcher(object):
 
         #self.test_queue = self.fill_example_queue("/home/xujingjing/code/review_summary/dataset/review_generation_dataset/test/*")
         self.train_batch = self.create_batch(mode="train")
-        self.valid_batch = self.create_batch(mode="valid", shuffleis=False)
+        self.test_batch = self.create_batch(mode="test", shuffleis=False)
         #self.valid_transfer_batch = self.create_batch(mode="valid-transfer", shuffleis=False)
         #train_batch = self.create_bach(mode="train")
 
@@ -179,16 +179,16 @@ class SenBatcher(object):
             num_batches = int(len(self.train_queue) / self._hps.batch_size)
             #num_batches_negetive = int(len(self.train_queue_negetive) / self._hps.batch_size)
 
-        elif mode == 'valid':
-            num_batches = int(len(self.valid_queue) / self._hps.batch_size)
+        elif mode == 'test':
+            num_batches = int(len(self.test_queue) / self._hps.batch_size)
             #num_batches_negetive = int(len(self.valid_queue_negetive) / self._hps.batch_size)
 
         for i in range(0, num_batches):
             batch = []
             if mode == 'train':
                 batch += (self.train_queue[i * self._hps.batch_size:i * self._hps.batch_size + self._hps.batch_size])
-            elif mode == 'valid':
-                batch += (self.valid_queue[i * self._hps.batch_size:i * self._hps.batch_size + self._hps.batch_size])
+            elif mode == 'test':
+                batch += (self.test_queue[i * self._hps.batch_size:i * self._hps.batch_size + self._hps.batch_size])
 
 
             all_batch.append(Batch(batch, self._hps, self._vocab))
@@ -205,14 +205,14 @@ class SenBatcher(object):
         if mode == "train":
             shuffle(self.train_batch)
             return self.train_batch
-        elif mode == 'valid':
-            return self.valid_batch
+        elif mode == 'test':
+            return self.test_batch
 
 
 
 
 
-    def fill_example_queue(self, data_path, mode = "valid", target_score = 1, filenumber=None):
+    def fill_example_queue(self, data_path, mode = "test", filenumber=None):
 
         new_queue =[]
 

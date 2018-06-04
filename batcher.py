@@ -182,24 +182,20 @@ class GenBatcher(object):
         self._vocab = vocab
         self._hps = hps
 
-        self.train_queue_positive = self.fill_example_queue("train/*", mode ="train", target_score = 1,filenumber = 643)
-        self.valid_queue_positive = self.fill_example_queue("valid/*",  mode ="valid", target_score = 1,filenumber = 5)
-        #self.valid_transfer_queue_positive = self.fill_example_queue("valid/*", mode="valid", target_score=1)
+        self.train_queue_positive = self.fill_example_queue("train/*", mode ="train", target_score = 1, filenumber = 643)#543
+        self.test_queue_positive = self.fill_example_queue("test/*",  mode ="test", target_score = 1, filenumber = 643)
+
 
         self.train_queue_negetive = self.fill_example_queue(
-            "train/*", mode="train", target_score = 0,filenumber = 643)
-        self.valid_queue_negetive = self.fill_example_queue(
-            "valid/*", mode="valid", target_score = 0,filenumber = 5)
+            "train/*", mode="train", target_score = 0, filenumber = 643) #643
+        self.test_queue_negetive = self.fill_example_queue(
+            "test/*", mode="test", target_score = 0, filenumber = 643)
 
-        #self.valid_transfer_queue_negetive = self.fill_example_queue(
-        #    "valid/*", mode="valid", target_score=0)
-
-
-        #self.test_queue = self.fill_example_queue("/home/xujingjing/code/review_summary/dataset/review_generation_dataset/test/*")
+    
         self.train_batch = self.create_batch(mode="train")
-        self.valid_batch = self.create_batch(mode="valid", shuffleis=False)
-        self.valid_transfer_batch = self.create_batch(mode="valid-transfer", shuffleis=False)
-        #train_batch = self.create_bach(mode="train")
+        self.test_batch = self.create_batch(mode="test", shuffleis=False)
+        self.test_transfer_batch = self.create_batch(mode="test-transfer", shuffleis=False)
+
 
     def create_batch(self, mode="train", shuffleis=True):
         all_batch = []
@@ -208,33 +204,35 @@ class GenBatcher(object):
             num_batches_positive = int(len(self.train_queue_positive) / self._hps.batch_size)
             num_batches_negetive = int(len(self.train_queue_negetive) / self._hps.batch_size)
 
-        elif mode == 'valid':
-            num_batches_positive = int(len(self.valid_queue_positive) / self._hps.batch_size)
-            num_batches_negetive = int(len(self.valid_queue_negetive) / self._hps.batch_size)
-        elif mode == 'valid-transfer':
-            num_batches_positive = int(len(self.valid_queue_negetive) / self._hps.batch_size)
-            num_batches_negetive = int(len(self.valid_queue_positive) / self._hps.batch_size)
+        elif mode == 'test':
+            num_batches_positive = int(len(self.test_queue_positive) / self._hps.batch_size)
+            num_batches_negetive = int(len(self.test_queue_negetive) / self._hps.batch_size)
+        elif mode == 'test-transfer':
+            num_batches_positive = int(len(self.test_queue_negetive) / self._hps.batch_size)
+            num_batches_negetive = int(len(self.test_queue_positive) / self._hps.batch_size)
 
         for i in range(0, num_batches_positive):
             batch = []
             if mode == 'train':
                 batch += (self.train_queue_positive[i * self._hps.batch_size:i * self._hps.batch_size + self._hps.batch_size])
-            elif mode == 'valid':
-                batch += (self.valid_queue_positive[i * self._hps.batch_size:i * self._hps.batch_size + self._hps.batch_size])
+            elif mode == 'test':
+                batch += (self.test_queue_positive[i * self._hps.batch_size:i * self._hps.batch_size + self._hps.batch_size])
 
-            elif mode == 'valid-transfer':
-                batch += (self.valid_queue_negetive[i * self._hps.batch_size:i * self._hps.batch_size + self._hps.batch_size])
+            elif mode == 'test-transfer':
+                batch += (self.test_queue_negetive[i * self._hps.batch_size:i * self._hps.batch_size + self._hps.batch_size])
 
             all_batch.append(Batch(batch, self._hps, self._vocab,1))
+            
+            
         for i in range(0, num_batches_negetive):
 
             batch = []
             if mode == 'train':
                 batch += (self.train_queue_negetive[i * self._hps.batch_size:i * self._hps.batch_size + self._hps.batch_size])
-            elif mode == 'valid':
-                batch += (self.valid_queue_negetive[i * self._hps.batch_size:i * self._hps.batch_size + self._hps.batch_size])
-            elif mode == 'valid-transfer':
-                batch += (self.valid_queue_positive[i * self._hps.batch_size:i * self._hps.batch_size + self._hps.batch_size])
+            elif mode == 'test':
+                batch += (self.test_queue_negetive[i * self._hps.batch_size:i * self._hps.batch_size + self._hps.batch_size])
+            elif mode == 'test-transfer':
+                batch += (self.test_queue_positive[i * self._hps.batch_size:i * self._hps.batch_size + self._hps.batch_size])
 
 
             all_batch.append(Batch(batch, self._hps, self._vocab,0))
@@ -250,15 +248,15 @@ class GenBatcher(object):
         if mode == "train":
             shuffle(self.train_batch)
             return self.train_batch
-        elif mode == 'valid':
-            return self.valid_batch
-        elif mode == 'valid-transfer':
-            return self.valid_transfer_batch
+        elif mode == 'test':
+            return self.test_batch
+        elif mode == 'test-transfer':
+            return self.test_transfer_batch
 
 
 
 
-    def fill_example_queue(self, data_path, mode = "valid", target_score = 1, filenumber=None):
+    def fill_example_queue(self, data_path, mode = "test", target_score = 1, filenumber=None):
 
         new_queue =[]
 
@@ -309,8 +307,7 @@ class GenBatcher(object):
                         weight[i] = 1
                       else:
                         weight[i] = 0
-                #dict_example["weight"] = weight
-                #print (dict_example)
+               
                       
                 if score != target_score:
                     continue

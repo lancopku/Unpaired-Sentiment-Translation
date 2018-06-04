@@ -122,13 +122,13 @@ class ClaBatcher(object):
 
 
         self.train_queue = self.fill_example_queue(
-            "/home/xujingjing/code/dataset/review_generation_dataset/train/*",filenumber = 643)
-        self.valid_queue = self.fill_example_queue(
-            "/home/xujingjing/code/dataset/review_generation_dataset/valid/*",filenumber = 5)
+            "train-original/*",filenumber = 2)
+        self.test_queue = self.fill_example_queue(
+            "test-original/*",filenumber = 5)
 
 
         self.train_batch = self.create_batches(mode="train", shuffleis=True)
-        self.valid_batch = self.create_batches(mode="valid", shuffleis=False)
+        self.test_batch = self.create_batches(mode="test", shuffleis=False)
 
     def create_batches(self, mode="train", shuffleis=True):
 
@@ -138,15 +138,15 @@ class ClaBatcher(object):
             num_batches = int(len(self.train_queue) / self._hps.batch_size)
             if shuffleis:
                 shuffle(self.train_queue)
-        elif mode == 'valid':
-            num_batches = int(len(self.valid_queue) / self._hps.batch_size)
+        elif mode == 'test':
+            num_batches = int(len(self.test_queue) / self._hps.batch_size)
 
         for i in range(0, num_batches):
             batch = []
             if mode == 'train':
                 batch += (self.train_queue[i*self._hps.batch_size:i*self._hps.batch_size + self._hps.batch_size])
-            elif mode == 'valid':
-                batch += (self.valid_queue[i*self._hps.batch_size:i*self._hps.batch_size + self._hps.batch_size])
+            elif mode == 'test':
+                batch += (self.test_queue[i*self._hps.batch_size:i*self._hps.batch_size + self._hps.batch_size])
 
             all_batch.append(Batch(batch, self._hps, self._vocab))
         return all_batch
@@ -157,38 +157,9 @@ class ClaBatcher(object):
             shuffle(self.train_batch)
             return self.train_batch
 
-        elif mode == 'valid':
-            return self.valid_batch
+        elif mode == 'test':
+            return self.test_batch
 
-
-
-    '''def fill_example_queue_from_generated(self, data_path):
-
-        new_queue =[]
-
-        filelist = glob.glob(data_path)  # get the list of datafiles
-        assert filelist, ('Error: Empty filelist at %s' % data_path)  # check filelist isn't empty
-        filelist = sorted(filelist)
-        for f in filelist:
-            reader = codecs.open(f, 'r', 'utf-8')
-            while True:
-                string_ = reader.readline()
-                if not string_: break
-                dict_example = json.loads(string_)
-                review = dict_example["example"]
-                if review.strip() =="":
-                    continue
-                score = dict_example["label"]
-                if int(score) < 3:
-                    score = 0
-                elif int(score) == 3:
-                    continue
-
-                else:
-                    score = 1
-                example = Example(review, score, self._vocab, self._hps)
-                new_queue.append(example)
-        return new_queue'''
 
     def fill_example_queue(self, data_path, filenumber=None):
 
