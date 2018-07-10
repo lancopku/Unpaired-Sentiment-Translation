@@ -231,7 +231,7 @@ def run_pre_train_classification(model, bachter, max_run_epoch, sess,saver, trai
                 tf.logging.info('loss: %f', loss_window / 100)  # print the loss to screen
                 loss_window = 0.0
 
-            if train_step % 100 == 0:
+            if train_step % 10000 == 0:
                 acc = run_test_classification(model, bachter, sess, saver, str(train_step))
                 tf.logging.info('acc: %.6f', acc)  # print the loss to screen
                 saver.save(sess, train_dir + "/model", global_step=train_step)
@@ -285,7 +285,7 @@ def run_train_cnn_classifier(model, batcher, max_run_epoch,  sess,saver, train_d
                 t0 = time.time()
                 tf.logging.info('loss: %f', loss_window / 100)  # print the loss to screen
                 loss_window = 0.0
-            if train_step % 100 == 0:
+            if train_step % 10000 == 0:
                 acc = run_test_cnn_classification(model, batcher, sess, saver, str(train_step))
                 tf.logging.info('cnn evaluate test acc: %.6f', acc)  # print the loss to screen
                 saver.save(sess, train_dir + "/model", global_step=train_step)

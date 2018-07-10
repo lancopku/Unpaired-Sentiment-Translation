@@ -122,9 +122,9 @@ class ClaBatcher(object):
 
 
         self.train_queue = self.fill_example_queue(
-            "train-original/*",filenumber = 2)
+            "train-original/*")
         self.test_queue = self.fill_example_queue(
-            "test-original/*",filenumber = 5)
+            "test-original/*")
 
 
         self.train_batch = self.create_batches(mode="train", shuffleis=True)

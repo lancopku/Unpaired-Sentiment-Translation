@@ -22,7 +22,7 @@ Unpaired Sentiment-to-Sentiment Translation: A Cycled Reinforcement Learning App
 
 bibtext:
 ```
-@inproceedings{unpaired-sentiment-translation,
+@article{unpaired-sentiment-translation,
   author    = {Jingjing Xu and Xu Sun and Qi Zeng and Xuancheng Ren and Xiaodong Zhang and Houfeng Wang and Wenjie Li},
   title     = {Unpaired Sentiment-to-Sentiment Translation: A Cycled Reinforcement Learning Approach},
   booktitle = {ACL},
