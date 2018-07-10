@@ -18,7 +18,7 @@ CUDA_VISIBLE_DEVICES=2 nohup bash run_test.sh > log_test.txt &
 ## Cite
 To use this code, please cite the following paper:<br><br>
 Jingjing Xu, Xu Sun, Qi Zeng, Xuancheng Ren, Xiaodong Zhang, Houfeng Wang, Wenjie Li.
-Unpaired Sentiment-to-Sentiment Translation: A Cycled Reinforcement Learning Approach. In proceedings of ACL 2018.
+Unpaired Sentiment-to-Sentiment Translation: A Cycled Reinforcement Learning Approach. ACL 2018.
 
 bibtext:
 ```
