@@ -473,7 +473,7 @@ def run_pre_train_sentimentor(model, bachter, max_run_epoch, sess,saver, train_d
                 tf.logging.info('loss: %f', loss_window / 100)  # print the loss to screen
                 loss_window = 0.0
 
-            if train_step % 100 == 0:
+            if train_step % 10000 == 0:
                 acc = run_test_sentimentor(model, bachter, sess, saver, str(train_step))
                 tf.logging.info('acc: %.6f', acc)  # print the loss to screen
                 saver.save(sess, train_dir + "/model", global_step=train_step)
