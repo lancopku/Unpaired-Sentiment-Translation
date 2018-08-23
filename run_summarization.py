@@ -194,8 +194,8 @@ def run_pre_train_generator(model, batcher, max_run_epoch, sess, saver, train_di
 
                 generator.generate_test_negetive_example("test-generate-transfer/" + str(epoch) + "epoch_step" + str(step) + "_temp_positive",batcher)
                 generator.generate_test_positive_example("test-generate/" + str(epoch) + "epoch_step" + str(step) + "_temp_positive", batcher)
-                run_test_our_method(cla_cnn_batcher, cnn_classifier, sess_cnn,
-                                    "test-generate-transfer/" + str(epoch) + "epoch_step" + str(step) + "_temp_positive"+"/*")
+                #run_test_our_method(cla_cnn_batcher, cnn_classifier, sess_cnn,
+                #                    "test-generate-transfer/" + str(epoch) + "epoch_step" + str(step) + "_temp_positive"+"/*")
                 saver.save(sess, train_dir + "/model", global_step=train_step)
         epoch += 1
         tf.logging.info("finished %d epoches", epoch)
@@ -600,10 +600,7 @@ def main(unused_argv):
     # Change log_root to FLAGS.log_root/FLAGS.exp_name and create the dir if necessary
     FLAGS.log_root = os.path.join(FLAGS.log_root, FLAGS.exp_name)
     if not os.path.exists(FLAGS.log_root):
-        if FLAGS.mode == "train":
             os.makedirs(FLAGS.log_root)
-        else:
-            raise Exception("Logdir %s doesn't exist. Run in train mode to create it." % (FLAGS.log_root))
 
     vocab = Vocab(FLAGS.vocab_path, FLAGS.vocab_size)  # create a vocabulary
 
@@ -725,7 +722,7 @@ def main(unused_argv):
         sess_ge, saver_ge, train_dir_ge = setup_training_generator(model)
         
         
-        util.load_ckpt(saver_cnn_cls, sess_cnn_cls, ckpt_dir="train-cnnclassification")
+        #util.load_ckpt(saver_cnn_cls, sess_cnn_cls, ckpt_dir="train-cnnclassification")
         util.load_ckpt(saver_sen, sess_sen, ckpt_dir="train-sentimentor")
         
 
